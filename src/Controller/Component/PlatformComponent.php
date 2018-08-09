@@ -2,8 +2,7 @@
 /**
  * Platform Component
  *
- * @package Platform
- * @link https://github.com/mrred85
+ * @link https://github.com/mrred85/cakephp-platform
  * @copyright 2016 - present Victor Rosu. All rights reserved.
  * @license Licensed under the MIT License.
  */
