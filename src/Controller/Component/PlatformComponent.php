@@ -264,6 +264,10 @@ class PlatformComponent extends Component
                 $regex = '/Version\/([0-9.]+)/i';
                 $nrMatch = 1;
                 break;
+            case 'Chrome':
+                $regex = '/(Chrome|CriOS)\/([0-9.]+)/i';
+                $nrMatch = 2;
+                break;
             case 'Opera':
                 $regex = '/(Opera\ |Version\/|OPR\/)([0-9.]+)/i';
                 $nrMatch = 2;
