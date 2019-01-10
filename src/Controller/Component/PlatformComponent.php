@@ -96,7 +96,7 @@ class PlatformComponent extends Component
     {
         parent::initialize($config);
 
-        $this->userAgent = $this->getController()->request->getEnv('HTTP_USER_AGENT');
+        $this->userAgent = $this->getController()->getRequest()->getEnv('HTTP_USER_AGENT');
         $this->os = 'Unknown';
         $this->browser = 'Unknown';
 
