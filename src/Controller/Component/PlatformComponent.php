@@ -152,6 +152,8 @@ class PlatformComponent extends Component
             '/camino/i' => 'Camino',
             '/opera mobi/i' => 'Opera Mobile',
             '/opera mini/i' => 'Opera Mini',
+            '/fxios/i' => 'Firefox',
+            '/focus/i' => 'Firefox',
             '/firefox.*fennec/i' => 'Fennec',
             '/seamonkey/i' => 'Sea Monkey'
         ];
@@ -211,7 +213,7 @@ class PlatformComponent extends Component
             }
         }
         if ($name == 'Android') {
-            $pm = preg_match('/\; Android ([0-9.]+)/i', $this->userAgent, $matches);
+            $pm = preg_match('/Android ([0-9.]+)/i', $this->userAgent, $matches);
             if ($pm && isset($matches[1]) && !empty($matches[1])) {
                 $version = implode('.', array_slice(explode('.', $matches[1]), 0, 2));
             }
@@ -254,6 +256,10 @@ class PlatformComponent extends Component
         switch ($name) {
             case 'Internet Explorer':
                 $regex = '/(MSIE\ |rv\:)([0-9.]+)/i';
+                $nrMatch = 2;
+                break;
+            case 'Firefox':
+                $regex = '/(Firefox|FxiOS|Focus)\/([a-z0-9.]+)/i';
                 $nrMatch = 2;
                 break;
             case 'Edge':
@@ -364,6 +370,16 @@ class PlatformComponent extends Component
         }
 
         return strtolower($browser) === strtolower($name);
+    }
+
+    /**
+     * Is mobile browser
+     *
+     * @return bool
+     */
+    public function isMobile()
+    {
+        return strstr($this->userAgent, 'Mobile') !== false ? true : false;
     }
 
     /**
