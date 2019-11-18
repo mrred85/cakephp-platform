@@ -8,7 +8,7 @@ PlatformComponent is a CakePHP component created to determine your browser name,
 
 ### Requirements
 - PHP >= 7.1.x
-- CakePHP >= 3.5.x
+- CakePHP >= 3.6.x
 
 ## Browsers
 - IE / InternetExplorer
