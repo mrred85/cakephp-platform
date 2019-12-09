@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Platform Component
  *
@@ -68,7 +69,7 @@ class PlatformComponent extends Component
 
     /**
      * @param mixed $version Version number
-     * @return null|string
+     * @return string|null
      */
     private function version($version)
     {
