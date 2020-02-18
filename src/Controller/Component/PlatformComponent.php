@@ -190,10 +190,9 @@ class PlatformComponent extends Component
             $version = trim(str_replace($name, '', $this->os));
         }
         if ($name == 'Mac OS') {
-            $pm = preg_match('/intel mac os x ([0-9_.]+)/i', $this->userAgent, $matches);
+            $pm = preg_match('/intel mac os x ([0-9_]+)/i', $this->userAgent, $matches);
             if ($pm && !empty($matches[1])) {
-                $matches[1] = str_replace('_', '.', $matches[1]);
-                $versionArray = explode('.', $matches[1]);
+                $versionArray = explode('_', $matches[1]);
                 $name = 'macOS';
                 if ($versionArray[1] <= 7) {
                     $name = 'Mac OS X';
@@ -207,10 +206,9 @@ class PlatformComponent extends Component
             $version = '9.2';
         }
         if ($name == 'iPhone' || $name == 'iPod' || $name == 'iPad') {
-            $pm = preg_match('/\;.*os ([0-9_.]+)/i', $this->userAgent, $matches);
+            $pm = preg_match('/\;.*os ([0-9_]+)/i', $this->userAgent, $matches);
             if ($pm && !empty($matches[1])) {
-                $matches[1] = str_replace('_', '.', $matches[1]);
-                $version = implode('.', array_slice(explode('.', $matches[1]), 0, 2));
+                $version = implode('.', array_slice(explode('_', $matches[1]), 0, 2));
             }
         }
         if ($name == 'Android') {
