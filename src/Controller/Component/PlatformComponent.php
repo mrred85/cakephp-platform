@@ -186,7 +186,7 @@ class PlatformComponent extends Component
         $version = null;
 
         if (substr($name, 0, 7) == 'Windows') {
-            $name = strpos($this->os, 'Windows Server') !== false ? 'Windows Server' : 'Windows';
+            $name = (strpos($this->os, 'Windows Server') !== false ? 'Windows Server' : 'Windows');
             $version = trim(str_replace($name, '', $this->os));
         }
         if ($name == 'Mac OS') {
@@ -313,12 +313,12 @@ class PlatformComponent extends Component
         $name = $this->os;
         switch (strtolower($os)) {
             case 'windows':
-                $result = substr($name, 0, 7) === 'Windows';
+                $result = (substr($name, 0, 7) === 'Windows');
                 break;
             case 'mac':
             case 'macos':
             case 'osx':
-                $result = substr($name, 0, 6) === 'Mac OS';
+                $result = (substr($name, 0, 6) === 'Mac OS');
                 break;
             case 'linux':
             case 'ubuntu':
@@ -328,7 +328,7 @@ class PlatformComponent extends Component
                 $result = ($name === 'iPhone' || $name === 'iPod' || $name === 'iPad');
                 break;
             default:
-                $result = strtolower($name) === strtolower($os);
+                $result = (strtolower($name) === strtolower($os));
                 break;
         }
 
@@ -365,10 +365,12 @@ class PlatformComponent extends Component
                 break;
         }
         if ($version) {
-            return strtolower($browser) === strtolower($name) && version_compare($info->version, $version, '<=');
+            $result = (strtolower($browser) === strtolower($name) && version_compare($info->version, $version, '<='));
+        } else {
+            $result = (strtolower($browser) === strtolower($name));
         }
 
-        return strtolower($browser) === strtolower($name);
+        return $result;
     }
 
     /**
@@ -378,7 +380,7 @@ class PlatformComponent extends Component
      */
     public function isMobile()
     {
-        return strpos($this->userAgent, 'Mobile') !== false ? true : false;
+        return (strpos($this->userAgent, 'Mobile') !== false ? true : false);
     }
 
     /**
@@ -396,7 +398,7 @@ class PlatformComponent extends Component
             if ($this->isOS($name)) {
                 return true;
             }
-            $version = !empty($arguments[0]) ? $this->version($arguments[0]) : null;
+            $version = (!empty($arguments[0]) ? $this->version($arguments[0]) : null);
             if ($this->isBrowser($name, $version)) {
                 return true;
             }
