@@ -138,24 +138,25 @@ class PlatformComponent extends Component
         $browserArray = [
             '/msie/i' => 'Internet Explorer',
             '/trident/i' => 'Internet Explorer',
-            '/firefox/i' => 'Firefox',
             '/safari/i' => 'Safari',
             '/chrome/i' => 'Chrome',
             '/crios/i' => 'Chrome',
             '/opera/i' => 'Opera',
             '/opr/i' => 'Opera',
+            '/opera mobi/i' => 'Opera Mobile',
+            '/opera mini/i' => 'Opera Mini',
             '/edge/i' => 'Edge',
             '/edgios/i' => 'Edge',
             '/edga/i' => 'Edge',
+            '/firefox/i' => 'Firefox',
+            '/fxios/i' => 'Firefox',
+            '/klar/i' => 'Firefox',
+            '/focus/i' => 'Firefox',
+            '/firefox.*fennec/i' => 'Fennec',
             '/netscape/i' => 'Netscape',
             '/maxthon/i' => 'Maxthon',
             '/konqueror/i' => 'Konqueror',
             '/camino/i' => 'Camino',
-            '/opera mobi/i' => 'Opera Mobile',
-            '/opera mini/i' => 'Opera Mini',
-            '/fxios/i' => 'Firefox',
-            '/focus/i' => 'Firefox',
-            '/firefox.*fennec/i' => 'Fennec',
             '/seamonkey/i' => 'Sea Monkey'
         ];
         foreach ($browserArray as $regex => $value) {
@@ -258,7 +259,7 @@ class PlatformComponent extends Component
                 $nrMatch = 2;
                 break;
             case 'Firefox':
-                $regex = '/(Firefox|FxiOS|Focus)\/([a-z0-9.]+)/i';
+                $regex = '/(Firefox|FxiOS|Klar|Focus)\/([a-z0-9.]+)/i';
                 $nrMatch = 2;
                 break;
             case 'Edge':
