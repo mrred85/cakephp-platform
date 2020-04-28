@@ -28,7 +28,7 @@ PlatformComponent is a CakePHP component created to determine your browser name,
 
 ## isBrowser
 ```php
-function isBrowser(string $browser, mixed $version = null): bool
+function isBrowser(string $browser, string $version = null): bool
 ```
 
 Usage of `isBrowser` function:
@@ -36,7 +36,7 @@ Usage of `isBrowser` function:
 $result = $this->Platform->isBrowser('safari');
 var_dump($result);
 
-$result = $this->Platform->isBrowser('ie', 8);
+$result = $this->Platform->isBrowser('ie', '8');
 var_dump($result);
 ```
 
@@ -72,7 +72,7 @@ var_dump($result);
 $result = $this->Platform->isChrome();
 var_dump($result);
 
-$result = $this->Platform->isInternetExplorer(8.1);
+$result = $this->Platform->isInternetExplorer('8.1');
 var_dump($result);
 ```
 

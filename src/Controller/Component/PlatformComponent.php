@@ -28,21 +28,21 @@ use Cake\Controller\Component;
  * @method PlatformComponent isWebOS()
  * @method PlatformComponent isTizen()
  *
- * @method PlatformComponent isIE(mixed $version = null)
- * @method PlatformComponent isInternetExplorer(mixed $version = null)
- * @method PlatformComponent isEdge(mixed $version = null)
- * @method PlatformComponent isFirefox(mixed $version = null)
- * @method PlatformComponent isChrome(mixed $version = null)
- * @method PlatformComponent isSafari(mixed $version = null)
- * @method PlatformComponent isOpera(mixed $version = null)
- * @method PlatformComponent isOperaMini(mixed $version = null)
- * @method PlatformComponent isOperaMobile(mixed $version = null)
- * @method PlatformComponent isNetscape(mixed $version = null)
- * @method PlatformComponent isMaxthon(mixed $version = null)
- * @method PlatformComponent isKonqueror(mixed $version = null)
- * @method PlatformComponent isCamino(mixed $version = null)
- * @method PlatformComponent isFennec(mixed $version = null)
- * @method PlatformComponent isSeaMonkey(mixed $version = null)
+ * @method PlatformComponent isIE(string $version = null)
+ * @method PlatformComponent isInternetExplorer(string $version = null)
+ * @method PlatformComponent isEdge(string $version = null)
+ * @method PlatformComponent isFirefox(string $version = null)
+ * @method PlatformComponent isChrome(string $version = null)
+ * @method PlatformComponent isSafari(string $version = null)
+ * @method PlatformComponent isOpera(string $version = null)
+ * @method PlatformComponent isOperaMini(string $version = null)
+ * @method PlatformComponent isOperaMobile(string $version = null)
+ * @method PlatformComponent isNetscape(string $version = null)
+ * @method PlatformComponent isMaxthon(string $version = null)
+ * @method PlatformComponent isKonqueror(string $version = null)
+ * @method PlatformComponent isCamino(string $version = null)
+ * @method PlatformComponent isFennec(string $version = null)
+ * @method PlatformComponent isSeaMonkey(string $version = null)
  */
 class PlatformComponent extends Component
 {
@@ -68,14 +68,14 @@ class PlatformComponent extends Component
     private $browser;
 
     /**
-     * @param mixed $version Version number
-     * @return string|null
+     * @param string|null $version Version number
+     * @return string
      */
-    private function version($version)
+    private function version(?string $version): string
     {
-        $result = null;
-        $parts = explode('.', $version);
-        if ($parts) {
+        $result = '0.0';
+        if ($version) {
+            $parts = explode('.', $version);
             $result = $parts[0];
             if (isset($parts[1])) {
                 $result .= '.' . $parts[1];
@@ -97,7 +97,7 @@ class PlatformComponent extends Component
     {
         parent::initialize($config);
 
-        $this->userAgent = $this->getController()->getRequest()->getEnv('HTTP_USER_AGENT');
+        $this->userAgent = $this->getController()->getRequest()->getEnv('HTTP_USER_AGENT', '');
         $this->os = 'Unknown';
         $this->browser = 'Unknown';
 
@@ -171,7 +171,7 @@ class PlatformComponent extends Component
      *
      * @return string
      */
-    public function getUserAgent()
+    public function getUserAgent(): string
     {
         return $this->userAgent;
     }
@@ -293,8 +293,7 @@ class PlatformComponent extends Component
         }
         $pm = preg_match($regex, $this->userAgent, $matches);
         if ($pm && !empty($matches[$nrMatch])) {
-            $version = $matches[$nrMatch];
-            $version = implode('.', array_slice(explode('.', $version), 0, 2));
+            $version = implode('.', array_slice(explode('.', $matches[$nrMatch]), 0, 2));
         }
 
         return (object)[
@@ -309,7 +308,7 @@ class PlatformComponent extends Component
      * @param string $os Operating System name
      * @return bool
      */
-    public function isOS($os)
+    public function isOS(string $os): bool
     {
         $name = $this->os;
         switch (strtolower($os)) {
@@ -340,10 +339,10 @@ class PlatformComponent extends Component
      * Is browser
      *
      * @param string $browser Browser name
-     * @param mixed $version Browser version
+     * @param string|null $version Browser version
      * @return bool
      */
-    public function isBrowser($browser, $version = null)
+    public function isBrowser(string $browser, ?string $version = null): bool
     {
         $info = $this->getBrowser();
         $name = $info->name;
@@ -366,7 +365,7 @@ class PlatformComponent extends Component
                 break;
         }
         if ($version) {
-            $result = (strtolower($browser) === strtolower($name) && version_compare($info->version, $version, '<='));
+            $result = (strtolower($browser) === strtolower($name) && version_compare($this->version($info->version), $this->version($version), '<='));
         } else {
             $result = (strtolower($browser) === strtolower($name));
         }
@@ -379,7 +378,7 @@ class PlatformComponent extends Component
      *
      * @return bool
      */
-    public function isMobile()
+    public function isMobile(): bool
     {
         return (strpos($this->userAgent, 'Mobile') !== false ? true : false);
     }
@@ -391,7 +390,7 @@ class PlatformComponent extends Component
      * @param array $arguments Method arguments
      * @return bool
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): bool
     {
         $prefix = substr($name, 0, 2);
         if ($prefix && $prefix == 'is') {
@@ -399,7 +398,7 @@ class PlatformComponent extends Component
             if ($this->isOS($name)) {
                 return true;
             }
-            $version = (!empty($arguments[0]) ? $this->version($arguments[0]) : null);
+            $version = (!empty($arguments[0]) ? $arguments[0] : null);
             if ($this->isBrowser($name, $version)) {
                 return true;
             }
