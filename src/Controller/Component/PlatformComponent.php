@@ -73,8 +73,8 @@ class PlatformComponent extends Component
      */
     private function version(?string $version): string
     {
-        $result = '0.0';
         if ($version) {
+            $version = str_replace('_', '.', $version);
             $parts = explode('.', $version);
             $result = $parts[0];
             if (isset($parts[1])) {
@@ -82,6 +82,8 @@ class PlatformComponent extends Component
             } else {
                 $result .= '.0';
             }
+        } else {
+            $result = '0.0';
         }
 
         return $result;
@@ -185,55 +187,58 @@ class PlatformComponent extends Component
     {
         $name = $this->os;
         $version = null;
+        $regex = null;
+        $nrMatch = 0;
 
-        if (substr($name, 0, 7) == 'Windows') {
-            $name = (strpos($this->os, 'Windows Server') !== false ? 'Windows Server' : 'Windows');
-            $version = trim(str_replace($name, '', $this->os));
+        switch ($name) {
+            case (substr($name, 0, 7) == 'Windows'):
+                $name = (strpos($this->os, 'Windows Server') !== false ? 'Windows Server' : 'Windows');
+                $version = trim(str_replace($name, '', $this->os));
+                break;
+            case 'Mac OS':
+                $regex = '/intel mac os x ([0-9_.]+)/i';
+                $nrMatch = 1;
+                break;
+            case 'Mac OS 9':
+                $version = '9.2';
+                break;
+            case 'iPhone':
+            case 'iPod':
+            case 'iPad':
+                $regex = '/\;.*os ([0-9_]+)/i';
+                $nrMatch = 1;
+                break;
+            case 'Android':
+                $regex = '/Android ([0-9.]+)/i';
+                $nrMatch = 1;
+                break;
+            case 'BlackBerry':
+                $regex = '/Version\/([0-9.]+)/i';
+                $nrMatch = 1;
+                break;
+            case 'WebOS':
+                $regex = '/(webOS|hpwOS)\/([0-9.]+)/i';
+                $nrMatch = 2;
+                break;
+            case 'Tizen':
+                $regex = '/(Tizen\ |Version\/)([0-9.]+)/i';
+                $nrMatch = 2;
+                break;
         }
-        if ($name == 'Mac OS') {
-            $pm = preg_match('/intel mac os x ([0-9_]+)/i', $this->userAgent, $matches);
-            if ($pm && !empty($matches[1])) {
-                $versionArray = explode('_', $matches[1]);
-                $name = 'macOS';
-                if ($versionArray[1] <= 7) {
-                    $name = 'Mac OS X';
-                } elseif ($versionArray[1] > 7 && $versionArray[1] <= 11) {
-                    $name = 'OS X';
+        if ($regex && $nrMatch) {
+            $pm = preg_match($regex, $this->userAgent, $matches);
+            if ($pm && !empty($matches[$nrMatch])) {
+                $version = $this->version($matches[$nrMatch]);
+
+                if ($name == 'Mac OS') {
+                    if (version_compare($version, '10.7', '<=')) {
+                        $name = 'Mac OS X';
+                    } elseif (version_compare($version, '10.11', '<=')) {
+                        $name = 'OS X';
+                    } else {
+                        $name = 'macOS';
+                    }
                 }
-                $version = implode('.', array_slice($versionArray, 0, 2));
-            }
-        }
-        if ($name == 'Mac OS 9') {
-            $version = '9.2';
-        }
-        if ($name == 'iPhone' || $name == 'iPod' || $name == 'iPad') {
-            $pm = preg_match('/\;.*os ([0-9_]+)/i', $this->userAgent, $matches);
-            if ($pm && !empty($matches[1])) {
-                $version = implode('.', array_slice(explode('_', $matches[1]), 0, 2));
-            }
-        }
-        if ($name == 'Android') {
-            $pm = preg_match('/Android ([0-9.]+)/i', $this->userAgent, $matches);
-            if ($pm && !empty($matches[1])) {
-                $version = implode('.', array_slice(explode('.', $matches[1]), 0, 2));
-            }
-        }
-        if ($name == 'BlackBerry') {
-            $pm = preg_match('/Version\/([0-9.]+)/i', $this->userAgent, $matches);
-            if ($pm && !empty($matches[1])) {
-                $version = implode('.', array_slice(explode('.', $matches[1]), 0, 2));
-            }
-        }
-        if ($name == 'WebOS') {
-            $pm = preg_match('/(webOS|hpwOS)\/([0-9.]+)/i', $this->userAgent, $matches);
-            if ($pm && !empty($matches[2])) {
-                $version = implode('.', array_slice(explode('.', $matches[2]), 0, 2));
-            }
-        }
-        if ($name == 'Tizen') {
-            $pm = preg_match('/(Tizen\ |Version\/)([0-9.]+)/i', $this->userAgent, $matches);
-            if ($pm && !empty($matches[2])) {
-                $version = implode('.', array_slice(explode('.', $matches[2]), 0, 2));
             }
         }
 
@@ -293,7 +298,7 @@ class PlatformComponent extends Component
         }
         $pm = preg_match($regex, $this->userAgent, $matches);
         if ($pm && !empty($matches[$nrMatch])) {
-            $version = implode('.', array_slice(explode('.', $matches[$nrMatch]), 0, 2));
+            $version = $this->version($matches[$nrMatch]);
         }
 
         return (object)[
